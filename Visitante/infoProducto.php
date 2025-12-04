@@ -32,6 +32,14 @@ try {
 } catch (PDOException $e) {
     die("Error de base de datos: " . $e->getMessage());
 }
+
+// 4. LÓGICA DEL CONTADOR DEL CARRITO (Para el menú)
+$total_items = 0;
+if (isset($_SESSION['carrito'])) {
+    foreach ($_SESSION['carrito'] as $item) {
+        $total_items += $item['cantidad'];
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -45,7 +53,25 @@ try {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Source+Sans+Pro:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/infoProducto.css">
     
-    <!-- Pasamos los datos de PHP a JS usando un div oculto -->
+    <style>
+        /* Chrome, Safari, Edge, Opera */
+        .qty-input::-webkit-outer-spin-button,
+        .qty-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        .qty-input {
+            -moz-appearance: textfield;
+        }
+        
+        /* Quitar borde azul al seleccionar */
+        .qty-input:focus {
+            outline: none;
+        }
+    </style>
+
     <div id="data-json" 
          data-variantes='<?php echo json_encode($todas_las_variantes); ?>' 
          data-actual='<?php echo $producto['id']; ?>'
@@ -70,12 +96,21 @@ try {
                 <nav class="nav-bar">
                     <a href="conocenos.php">Conócenos</a>
                     <a href="productos.php" class="activo">Productos</a>
-                    <a href="carrito.php">Carrito</a>
-                    <a href="IniciarSesion.php">Iniciar Sesión</a>
+                    
+                    <a href="carrito.php">
+                        Carrito 
+                        <?php if($total_items > 0): ?>
+                            <span style="background: #e74c3c; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; position: relative; top: -2px;">
+                                <?php echo $total_items; ?>
+                            </span>
+                        <?php endif; ?>
+                    </a>
+                    
+                    <a href="IniciarSesion.php" id="link-login">Iniciar Sesión</a>
                 </nav>
 
-                <div class="sign-in">
-                    <a href="registro.php">Registrarse</a>
+                <div class="sign-in" id="box-registro">
+                    <a href="registro.php" id="link-registro">Registrarse</a>
                 </div>
             </div>
         </header>
@@ -113,9 +148,8 @@ try {
                         <span class="price-value"><?php echo number_format($producto['precio'], 2); ?>€</span>
                     </div>
 
-                    <!-- Formulario para enviar al Carrito -->
-                    <form action="carrito.php" method="POST" id="form-carrito">
-                        <input type="hidden" name="action" value="add">
+                    <form action="AgregarCarrito.php" method="POST" id="form-carrito">
+                        
                         <input type="hidden" name="id_producto" value="<?php echo $producto['id']; ?>">
 
                         <div class="detail-group quantity-group">
@@ -123,7 +157,6 @@ try {
                             <div class="qty-selector">
                                 <button type="button" class="qty-btn btn-menos">-</button>
                                 
-                                <!-- CAMBIO: INPUT visible y editable en lugar de span -->
                                 <input type="number" 
                                        name="cantidad" 
                                        id="input-cantidad" 
@@ -131,7 +164,7 @@ try {
                                        min="1" 
                                        max="<?php echo $producto['stock']; ?>"
                                        class="qty-input"
-                                       style="width: 50px; text-align: center; border: none; background: transparent; font-weight: bold; font-size: 18px; color: #333; margin: 0 5px;">
+                                       style="width: 50px; text-align: center; border: none; background: transparent; font-weight: bold; font-size: 18px; color: #333; margin: 0 5px; outline: none; padding: 0;">
                                 
                                 <button type="button" class="qty-btn btn-mas">+</button>
                             </div>
@@ -207,7 +240,7 @@ try {
                 </div>
                 <div class="footer-bottom">
                     <div class="politica-legal">
-                        <a href="#">Aviso Legal</a><span>•</span><a href="#">Política de Privacidad</a><span>•</span><a href="#">Política de Cookies</a>
+                        <a href="aviso-legal.php">Aviso Legal</a><span>•</span><a href="privacidad.php">Política de Privacidad</a><span>•</span><a href="cookies.php">Política de Cookies</a>
                     </div>
                 </div>
             </div>
