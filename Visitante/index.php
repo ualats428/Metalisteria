@@ -1,3 +1,16 @@
+<?php
+session_start();
+include '../conexion.php'; // Asegúrate de que la ruta a conexion.php sea correcta
+
+// LÓGICA DEL CONTADOR (Badge rojo)
+$total_items = 0;
+if (isset($_SESSION['carrito'])) {
+    foreach ($_SESSION['carrito'] as $item) {
+        $total_items += $item['cantidad'];
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -28,7 +41,14 @@
                 <nav class="nav-bar">
                     <a href="conocenos.php">Conócenos</a>
                     <a href="productos.php">Productos</a>
-                    <a href="carrito.php">Carrito</a>
+                    <a href="carrito.php">
+                        Carrito 
+                        <?php if($total_items > 0): ?>
+                            <span style="background: #e74c3c; color: white; border-radius: 50%; padding: 2px 6px; font-size: 12px; position: relative; top: -2px;">
+                                <?php echo $total_items; ?>
+                            </span>
+                        <?php endif; ?>
+                    </a>
                     <a href="IniciarSesion.php" id="link-login">Iniciar Sesión</a>
                 </nav>
 

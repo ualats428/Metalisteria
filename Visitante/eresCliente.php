@@ -44,8 +44,8 @@
                 <h1 class="cliente-title">Inicia sesión o crea una cuenta para continuar</h1>
 
                 <div class="buttons-row">
-                    <a href="IniciarSesion.php" class="btn-big-action">Iniciar Sesión</a>
-                    <a href="registro.php" class="btn-big-action">Registro</a>
+                    <a href="IniciarSesion.php?origen=compra" class="btn-big-action">Iniciar Sesión</a>
+                    <a href="registro.php?origen=compra" class="btn-big-action">Registro</a>
                 </div>
 
                 <a href="carrito.php" class="btn-back-pill">
